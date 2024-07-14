@@ -9,19 +9,19 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        $post = new User();
-        $post->name = 'Super Admin';
-        $post->email = 'admin@mail.com';
-        $post->role = 1;
-        $post->password = Hash::make('admin123');
-        $post->tgl_lahir = date('Y-m-d');
-        $post->tgl_masuk = date('Y-m-d');
-        $post->phone = '082121717079';
-        $post->save();
-    }
+        /**
+         * Run the database seeds.
+         */
+        public function run(): void
+        {
+                $post = new User();
+                $post->name = 'Super Admin';
+                $post->email = 'admin@mail.com';
+                $post->role = 1;
+                $post->password = Hash::make('admin123');
+                $post->tgl_lahir = date('Y-m-d');
+                $post->tgl_masuk = date('Y-m-d');
+                $post->phone = '082121717079';
+                $post->save();
+        }
 }
