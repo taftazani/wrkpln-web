@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'jwt.verify' => \App\Http\Middleware\JwtMiddleware::class,
+            'otp.verified' => \App\Http\Middleware\CheckOtpVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

@@ -18,6 +18,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MasterPermissionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
@@ -28,6 +30,8 @@ Route::post('/register', [MasterUserController::class, 'makeUser'])->name('user.
 
 
 Route::group(['middleware' => 'jwt.verify'], function ($router) {
+    Route::post('send-otp', [AuthController::class, 'sendOtp']);
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::group(['prefix' => 'dashboard'], function ($router) {
         Route::get('/user', [DashboardController::class, 'getDashboardUserData']);
         Route::get('/total-staff', [DashboardController::class, 'getTotalStaff']);

@@ -10,6 +10,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Traits\ApiResponse;
 use App\Traits\JwtHandler;
 use App\Traits\ImageUpload;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -61,6 +62,38 @@ class AuthController extends Controller
 
         $permission = $user->roles->pluck('permissions')->flatten()->pluck('name')->unique();
         return $this->successResponseUser(compact('token', 'user', 'permission'), 'User logged in successfully');
+    }
+    public function sendOtp(Request $request)
+    {
+        $user = Auth::user();
+        $otp = rand(1000, 9999);
+        $user->otp = $otp;
+        $user->otp_expiry = now()->addMinutes(10);
+        $user->save();
+
+        // Send OTP to the user's email or phone number
+        Mail::to($user->email)->send(new \App\Mail\SendOtp($otp));
+
+        return response()->json(['message' => 'OTP sent successfully']);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $user = Auth::user();
+        $otp = $request->input('otp');
+
+        if ($user->otp !== $otp || $user->otp_expiry->isPast()) {
+            return response()->json(['error' => 'Invalid or expired OTP'], 401);
+        }
+
+        $user->otp = null;
+        $user->otp_expiry = null;
+        $user->save();
+
+        // Generate a new JWT token
+        $token = JWTAuth::fromUser($user);
+
+        return response()->json(compact('token'));
     }
 
     /**
