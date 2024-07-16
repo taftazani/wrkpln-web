@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\MasterScheduleController;
 use App\Http\Controllers\Api\MasterShiftController;
 use App\Http\Controllers\Api\MasterUserController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\TodoController;
@@ -40,6 +41,13 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
         Route::get('/total-advances', [DashboardController::class, 'getTotalAdvances']);
         Route::get('/getChartData', [DashboardController::class, 'getChartData']);
         Route::get('/upcoming-birthdays', [DashboardController::class, 'getUpcomingBirthdays']);
+    });
+    Route::group(['prefix' => 'organization'], function ($router) {
+        Route::get('/get', [OrganizationController::class, 'getOrganization'])->name('organization.get');
+        Route::get('/export', [OrganizationController::class, 'export']);
+        Route::post('/make', [OrganizationController::class, 'makeOrganization'])->name('organization.make');
+        Route::post('/update', [OrganizationController::class, 'updateOrganization'])->name('organization.update');
+        Route::post('/delete', [OrganizationController::class, 'deleteOrganization'])->name('organization.delete');
     });
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);
