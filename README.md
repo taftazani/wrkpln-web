@@ -15,8 +15,8 @@ You can use any development environment like XAMPP, MAMP, or Laravel Valet for s
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/employee-management-api.git
-cd employee-management-api
+git clone https://github.com/taftazani/wrkpln-web.git
+cd wrkpln-web
 ```
 
 ### Step 2: Set Up Environment Variables
@@ -81,7 +81,7 @@ For Windows users, we recommend using XAMPP or any other PHP environment of your
 
 For Mac users, Laravel Valet is a great option for a local development environment. You can install it by following the [official documentation](https://laravel.com/docs/11.x/valet).
 
-## API Endpoints
+## Example API Endpoints
 
 ### Employee Types
 
