@@ -1,7 +1,6 @@
-````markdown
-# Employee Management API
+# Workplan Management API
 
-Welcome to the Employee Management API! This project is designed to manage employee types and other related functionalities. Below, you'll find detailed instructions on how to set up and run this project.
+Welcome to the Workplan Management API! This project is designed to manage employee types and other related functionalities. Below, you'll find detailed instructions on how to set up and run this project.
 
 ## Requirements
 
@@ -19,7 +18,6 @@ You can use any development environment like XAMPP, MAMP, or Laravel Valet for s
 git clone https://github.com/your-username/employee-management-api.git
 cd employee-management-api
 ```
-````
 
 ### Step 2: Set Up Environment Variables
 
