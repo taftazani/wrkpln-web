@@ -13,15 +13,23 @@ return new class extends Migration
     {
         Schema::create('structures', function (Blueprint $table) {
             $table->id();
+            $table->string('code');
             $table->string('name');
             $table->unsignedBigInteger('organization_id');
             $table->unsignedBigInteger('function_id');
             $table->unsignedBigInteger('level_structure_id');
-            $table->string('cost_center');
-            $table->string('plan_man_power');
-            $table->string('actual_man_power');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('cost_center')->nullable();
+            $table->integer('plan_man_power')->nullable();
+            $table->integer('actual_man_power')->default(0);
+            $table->integer('position')->nullable();
             $table->timestampsWithUser();
+
+            $table->foreign('organization_id')->references('id')->on('organizations');
+            $table->foreign('function_id')->references('id')->on('functions');
+            $table->foreign('level_structure_id')->references('id')->on('level_structures');
         });
+
     }
 
     /**

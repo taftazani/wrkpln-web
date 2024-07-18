@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\AbsensiController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FunctionsController;
 use App\Http\Controllers\Api\IzinController;
 use App\Http\Controllers\Api\KasbonController;
 use App\Http\Controllers\Api\KpiController;
+use App\Http\Controllers\Api\LevelStructureController;
 use App\Http\Controllers\Api\MasterPlaceController;
 use App\Http\Controllers\Api\MasterRoleController;
 use App\Http\Controllers\Api\MasterScheduleController;
@@ -14,6 +16,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\TodoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MasterPermissionController;
@@ -48,6 +51,31 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
         Route::post('/make', [OrganizationController::class, 'makeOrganization'])->name('organization.make');
         Route::post('/update', [OrganizationController::class, 'updateOrganization'])->name('organization.update');
         Route::post('/delete', [OrganizationController::class, 'deleteOrganization'])->name('organization.delete');
+    });
+    Route::group(['prefix' => 'function'], function ($router) {
+        Route::get('/get', [FunctionsController::class, 'getFunctions'])->name('function.get');
+        Route::get('/export', [FunctionsController::class, 'export']);
+        Route::post('/make', [FunctionsController::class, 'makeFunctions'])->name('function.make');
+        Route::post('/update', [FunctionsController::class, 'updateFunctions'])->name('function.update');
+        Route::post('/delete', [FunctionsController::class, 'deleteFunctions'])->name('function.delete');
+    });
+    Route::group(['prefix' => 'levelStructure'], function ($router) {
+        Route::get('/get', [LevelStructureController::class, 'getLevelStructure'])->name('level.get');
+        Route::get('/export', [LevelStructureController::class, 'export']);
+        Route::post('/make', [LevelStructureController::class, 'makeLevelStructure'])->name('level.make');
+        Route::post('/update', [LevelStructureController::class, 'updateLevelStructure'])->name('level.update');
+        Route::post('/delete', [LevelStructureController::class, 'deleteLevelStructure'])->name('level.delete');
+    });
+
+    Route::group(['prefix' => 'structure'], function ($router) {
+        Route::get('/get', [StructureController::class, 'getStructure'])->name('structure.get');
+        Route::get('/export', [StructureController::class, 'export']);
+        Route::post('/make', [StructureController::class, 'makeStructure'])->name('structure.make');
+        Route::post('/update', [StructureController::class, 'updateStructure'])->name('structure.update');
+        Route::post('/delete', [StructureController::class, 'deleteStructure'])->name('structure.delete');
+        Route::post('/reorder', [StructureController::class, 'reorderStructure'])->name('structure.reorder');
+        Route::post('/assign-user', [StructureController::class, 'assignUserToStructure'])->name('structure.assignUser');
+        Route::post('/remove-user', [StructureController::class, 'removeUserFromStructure'])->name('structure.removeUser');
     });
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);
