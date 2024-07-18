@@ -11,7 +11,7 @@ class HolidayRepository
     public function getAllHolidays($request)
     {
         try {
-            $holidays = Holiday::orderBy('holiday_date')->paginate(10);
+            $holidays = Holiday::orderBy('holiday_date')->get();
             return [
                 'status' => true,
                 'message' => 'Success Getting Data Holidays',
