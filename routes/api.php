@@ -26,7 +26,7 @@ use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\MasterPermissionController;
 use App\Http\Controllers\Api\LevelStructureController;
 use App\Http\Controllers\Api\MasterScheduleController;
-
+use App\Http\Controllers\Api\PackageTypeController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
@@ -83,7 +83,7 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     Route::group(['prefix' => 'holidays'], function ($router) {
         Route::get('/get', [HolidayController::class, 'getHolidays'])->name('holidays.get');
         Route::get('/export', [HolidayController::class, 'export']);
-        Route::post('/create', [HolidayController::class, 'createHoliday'])->name('holidays.create');
+        Route::post('/make', [HolidayController::class, 'createHoliday'])->name('holidays.create');
         Route::post('/update', [HolidayController::class, 'updateHoliday'])->name('holidays.update');
         Route::post('/delete', [HolidayController::class, 'deleteHoliday'])->name('holidays.delete');
         Route::post('/bulk-upload', [HolidayController::class, 'bulkUpload'])->name('holidays.bulk_upload');
@@ -96,6 +96,14 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
         Route::delete('/{id}', [EmployeeTypeController::class, 'destroy']);
         Route::post('/bulk-upload', [EmployeeTypeController::class, 'bulkUpload']);
         Route::get('/export', [EmployeeTypeController::class, 'export']);
+    });
+    Route::group(['prefix' => 'package-types'], function () {
+        Route::get('/', [PackageTypeController::class, 'index']);
+        Route::post('/', [PackageTypeController::class, 'store']);
+        Route::put('/{id}', [PackageTypeController::class, 'update']);
+        Route::delete('/{id}', [PackageTypeController::class, 'destroy']);
+        Route::post('/bulk-upload', [PackageTypeController::class, 'bulkUpload']);
+        Route::get('/export', [PackageTypeController::class, 'export']);
     });
 
     Route::group(['prefix' => 'settings'], function () {
