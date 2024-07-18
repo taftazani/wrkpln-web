@@ -1,5 +1,3 @@
-Sure, here's a detailed and cool `README.md` for your project:
-
 ````markdown
 # Employee Management API
 
