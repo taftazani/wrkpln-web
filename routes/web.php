@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\FunctionsController;
 use App\Http\Controllers\Api\LevelStructureController;
 use App\Http\Controllers\Api\OrganizationController;
 use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 Route::get('/', function () {
     return view('welcome');
