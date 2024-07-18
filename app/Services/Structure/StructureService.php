@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services\Structure;
 
 use App\Repositories\Structure\StructureRepository;

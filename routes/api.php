@@ -1,28 +1,31 @@
 <?php
 
-use App\Http\Controllers\Api\AbsensiController;
-use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\FunctionsController;
-use App\Http\Controllers\Api\IzinController;
-use App\Http\Controllers\Api\KasbonController;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\KpiController;
-use App\Http\Controllers\Api\LevelStructureController;
-use App\Http\Controllers\Api\MasterPlaceController;
+use App\Http\Controllers\Api\IzinController;
+use App\Http\Controllers\Api\TodoController;
+use App\Http\Controllers\Api\KasbonController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\AbsensiController;
+use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\EmployeeTypeController;
+use App\Http\Controllers\Api\FunctionsController;
+use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\MasterRoleController;
-use App\Http\Controllers\Api\MasterScheduleController;
-use App\Http\Controllers\Api\MasterShiftController;
 use App\Http\Controllers\Api\MasterUserController;
+use App\Http\Controllers\Api\MasterPlaceController;
+use App\Http\Controllers\Api\MasterShiftController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
-use App\Http\Controllers\Api\PayrollController;
-use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\StructureController;
-use App\Http\Controllers\Api\TodoController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MasterPermissionController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Api\LevelStructureController;
+use App\Http\Controllers\Api\MasterScheduleController;
 
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -76,6 +79,28 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
         Route::post('/reorder', [StructureController::class, 'reorderStructure'])->name('structure.reorder');
         Route::post('/assign-user', [StructureController::class, 'assignUserToStructure'])->name('structure.assignUser');
         Route::post('/remove-user', [StructureController::class, 'removeUserFromStructure'])->name('structure.removeUser');
+    });
+    Route::group(['prefix' => 'holidays'], function ($router) {
+        Route::get('/get', [HolidayController::class, 'getHolidays'])->name('holidays.get');
+        Route::get('/export', [HolidayController::class, 'export']);
+        Route::post('/create', [HolidayController::class, 'createHoliday'])->name('holidays.create');
+        Route::post('/update', [HolidayController::class, 'updateHoliday'])->name('holidays.update');
+        Route::post('/delete', [HolidayController::class, 'deleteHoliday'])->name('holidays.delete');
+        Route::post('/bulk-upload', [HolidayController::class, 'bulkUpload'])->name('holidays.bulk_upload');
+    });
+
+    Route::prefix('employee-types')->group(function () {
+        Route::get('/', [EmployeeTypeController::class, 'index']);
+        Route::post('/', [EmployeeTypeController::class, 'store']);
+        Route::put('/{id}', [EmployeeTypeController::class, 'update']);
+        Route::delete('/{id}', [EmployeeTypeController::class, 'destroy']);
+        Route::post('/bulk-upload', [EmployeeTypeController::class, 'bulkUpload']);
+        Route::get('/export', [EmployeeTypeController::class, 'export']);
+    });
+
+    Route::group(['prefix' => 'settings'], function () {
+        Route::post('/login-timeout', [SettingsController::class, 'updateLoginTimeout']);
+        Route::post('/workday/{id}', [SettingsController::class, 'updateWorkday']);
     });
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);

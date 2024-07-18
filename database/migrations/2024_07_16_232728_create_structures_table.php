@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('structures', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
             $table->string('name');
             $table->unsignedBigInteger('organization_id');
             $table->unsignedBigInteger('function_id');
             $table->unsignedBigInteger('level_structure_id');
             $table->unsignedBigInteger('parent_id')->nullable();
+            $table->integer('sort_order')->default(0);
             $table->string('cost_center')->nullable();
             $table->integer('plan_man_power')->nullable();
             $table->integer('actual_man_power')->default(0);
