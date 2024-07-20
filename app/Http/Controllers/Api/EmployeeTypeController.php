@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\EmployeeTypeService;
+use App\Services\EmployeeType\EmployeeTypeService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 
@@ -27,15 +27,15 @@ class EmployeeTypeController extends Controller
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $result = $this->service->updateEmployeeType($request, $id);
+        $result = $this->service->updateEmployeeType($request);
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $result = $this->service->deleteEmployeeType($id);
+        $result = $this->service->deleteEmployeeType($request);
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 

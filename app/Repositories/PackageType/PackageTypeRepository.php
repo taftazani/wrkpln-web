@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\PackageType;
 
 use App\Models\PackageType;
 use Exception;
@@ -15,7 +15,7 @@ class PackageTypeRepository
             if ($request->has('search')) {
                 $query->where('name', 'like', '%' . $request->search . '%');
             }
-            return $query->orderBy('code')->paginate(10);
+            return $query->orderBy('code')->get();
         } catch (Exception $e) {
             throw new Exception('Error Getting Package Types: ' . $e->getMessage());
         }
@@ -24,7 +24,21 @@ class PackageTypeRepository
     public function create(array $data)
     {
         try {
-            return PackageType::create($data);
+            // Retrieve the last function
+            $lastPackageType = PackageType::latest('id')->first();
+
+            // Calculate the new ID (increment by 1)
+            $newId = $lastPackageType ? $lastPackageType->id + 1 : 1;
+
+            // Determine the length of the new ID and dynamically pad with zeros if necessary
+            $length = max(3, strlen((string) $newId));
+            $newCode = 'PAKET' . str_pad($newId, $length, '0', STR_PAD_LEFT);
+            $input = [
+                'code' => $newCode,
+                'name' => $data['name'],
+                'price' => $data['price'],
+            ];
+            return PackageType::create($input);
         } catch (Exception $e) {
             throw new Exception('Error Creating Package Type: ' . $e->getMessage());
         }

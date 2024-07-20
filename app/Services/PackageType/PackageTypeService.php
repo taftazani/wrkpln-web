@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\PackageType;
 
-use App\Repositories\PackageTypeRepository;
+use App\Repositories\PackageType\PackageTypeRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -33,10 +33,8 @@ class PackageTypeService
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|unique:package_types',
             'name' => 'required',
             'price' => 'required|numeric',
-            'status' => 'required|in:active,inactive'
         ]);
 
         if ($validator->fails()) {
@@ -63,13 +61,12 @@ class PackageTypeService
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'code' => 'required|unique:package_types,code,' . $id,
             'name' => 'required',
             'price' => 'required|numeric',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required|in:0,1'
         ]);
 
         if ($validator->fails()) {
@@ -81,7 +78,7 @@ class PackageTypeService
         }
 
         try {
-            $packageType = $this->repository->update($request->all(), $id);
+            $packageType = $this->repository->update($request->all(), $request->id);
             return [
                 'status' => true,
                 'message' => 'Success Updating Package Type',
@@ -96,10 +93,10 @@ class PackageTypeService
         }
     }
 
-    public function delete($id)
+    public function delete(Request $request)
     {
         try {
-            $this->repository->delete($id);
+            $this->repository->delete($request->id);
             return [
                 'status' => true,
                 'message' => 'Success Deleting Package Type',

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->decimal('price', 15, 2);
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status',[0, 1])->default(1)->comment('Active Status');
             $table->timestampsWithUser();
         });
     }

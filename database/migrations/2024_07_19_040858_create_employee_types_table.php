@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('code')->unique()->comment('System generated code');
             $table->string('type')->comment('Type of employee (permanent, contract, outsource)');
-            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->enum('status',[0, 1])->default(1)->comment('Active Status');
+
             $table->timestampsWithUser();
         });
     }

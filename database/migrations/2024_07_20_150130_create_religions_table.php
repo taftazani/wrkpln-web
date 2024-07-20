@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('level_structures', function (Blueprint $table) {
+        Schema::create('religions', function (Blueprint $table) {
             $table->id();
-            $table->string('code');
-            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('name')->unique();
             $table->enum('status',[0, 1])->default(1)->comment('Active Status');
             $table->timestampsWithUser();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('level_structures');
+        Schema::dropIfExists('religions');
     }
 };
