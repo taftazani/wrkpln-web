@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\EmployeeType;
 
-use App\Repositories\EmployeeTypeRepository;
+use App\Repositories\EmployeeType\EmployeeTypeRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -34,8 +34,7 @@ class EmployeeTypeService
     public function createEmployeeType(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string|unique:employee_types,type',
-            'status' => 'required|in:active,inactive'
+            'type' => 'required|string|unique:employee_types,type'
         ]);
 
         if ($validator->fails()) {
@@ -53,7 +52,6 @@ class EmployeeTypeService
             $employeeType = $this->repository->createEmployeeType([
                 'code' => $newCode,
                 'type' => $request->type,
-                'status' => $request->status
             ]);
 
             return [
@@ -70,11 +68,11 @@ class EmployeeTypeService
         }
     }
 
-    public function updateEmployeeType(Request $request, $id)
+    public function updateEmployeeType(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'type' => 'required|string|unique:employee_types,type,' . $id,
-            'status' => 'required|in:active,inactive'
+            'type' => 'required|string|unique:employee_types,type,' . $request->id,
+            'status' => 'required|in:0,1'
         ]);
 
         if ($validator->fails()) {
@@ -86,7 +84,7 @@ class EmployeeTypeService
         }
 
         try {
-            $employeeType = $this->repository->updateEmployeeType($id, $request->only('type', 'status'));
+            $employeeType = $this->repository->updateEmployeeType($request->id, $request->only('type', 'status'));
 
             return [
                 'status' => true,
@@ -102,10 +100,10 @@ class EmployeeTypeService
         }
     }
 
-    public function deleteEmployeeType($id)
+    public function deleteEmployeeType($request)
     {
         try {
-            $this->repository->deleteEmployeeType($id);
+            $this->repository->deleteEmployeeType($request->id);
 
             return [
                 'status' => true,

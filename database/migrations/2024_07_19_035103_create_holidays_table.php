@@ -17,7 +17,8 @@ class CreateHolidaysTable extends Migration
             $table->id();
             $table->date('holiday_date')->unique()->comment('Holiday date');
             $table->string('holiday_name')->comment('Holiday name');
-            $table->enum('status', ['active', 'inactive'])->default('active')->comment('Holiday status');
+            $table->enum('status',[0, 1])->default(1)->comment('Active Status');
+
             $table->timestampsWithUser();
         });
     }

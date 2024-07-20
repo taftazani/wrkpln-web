@@ -10,12 +10,14 @@ use App\Http\Controllers\Api\TodoController;
 use App\Http\Controllers\Api\KasbonController;
 use App\Http\Controllers\Api\ReportController;
 use App\Http\Controllers\Api\AbsensiController;
+use App\Http\Controllers\Api\CitizenController;
 use App\Http\Controllers\Api\HolidayController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\FunctionsController;
+use App\Http\Controllers\Api\GenderController;
 use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\MasterRoleController;
 use App\Http\Controllers\Api\MasterUserController;
@@ -25,8 +27,11 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
 use App\Http\Controllers\MasterPermissionController;
 use App\Http\Controllers\Api\LevelStructureController;
+use App\Http\Controllers\Api\MarriedStatusController;
 use App\Http\Controllers\Api\MasterScheduleController;
+use App\Http\Controllers\Api\MenuMappingController;
 use App\Http\Controllers\Api\PackageTypeController;
+use App\Http\Controllers\Api\ReligionController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
@@ -90,20 +95,55 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     });
 
     Route::prefix('employee-types')->group(function () {
-        Route::get('/', [EmployeeTypeController::class, 'index']);
-        Route::post('/', [EmployeeTypeController::class, 'store']);
-        Route::put('/{id}', [EmployeeTypeController::class, 'update']);
-        Route::delete('/{id}', [EmployeeTypeController::class, 'destroy']);
+        Route::get('/get', [EmployeeTypeController::class, 'index']);
+        Route::post('/make', [EmployeeTypeController::class, 'store']);
+        Route::post('/update', [EmployeeTypeController::class, 'update']);
+        Route::post('/delete', [EmployeeTypeController::class, 'destroy']);
         Route::post('/bulk-upload', [EmployeeTypeController::class, 'bulkUpload']);
         Route::get('/export', [EmployeeTypeController::class, 'export']);
     });
     Route::group(['prefix' => 'package-types'], function () {
-        Route::get('/', [PackageTypeController::class, 'index']);
-        Route::post('/', [PackageTypeController::class, 'store']);
-        Route::put('/{id}', [PackageTypeController::class, 'update']);
-        Route::delete('/{id}', [PackageTypeController::class, 'destroy']);
+        Route::get('/get', [PackageTypeController::class, 'index']);
+        Route::post('/make', [PackageTypeController::class, 'store']);
+        Route::post('/update', [PackageTypeController::class, 'update']);
+        Route::post('/delete', [PackageTypeController::class, 'destroy']);
         Route::post('/bulk-upload', [PackageTypeController::class, 'bulkUpload']);
         Route::get('/export', [PackageTypeController::class, 'export']);
+    });
+    Route::group(['prefix' => 'menuMapping'], function ($router) {
+        Route::get('/get', [MenuMappingController::class, 'getMenuMapping'])->name('menu_mapping.get');
+        Route::get('/export', [MenuMappingController::class, 'export']);
+        Route::post('/make', [MenuMappingController::class, 'makeMenuMapping'])->name('menu_mapping.make');
+        Route::post('/update', [MenuMappingController::class, 'updateMenuMapping'])->name('menu_mapping.update');
+        Route::post('/delete', [MenuMappingController::class, 'deleteMenuMapping'])->name('menu_mapping.delete');
+    });
+    Route::group(['prefix' => 'gender'], function ($router) {
+        Route::get('/get', [GenderController::class, 'getGender'])->name('gender.get');
+        Route::post('/make', [GenderController::class, 'makeGender'])->name('gender.make');
+        Route::post('/update', [GenderController::class, 'updateGender'])->name('gender.update');
+        Route::post('/delete', [GenderController::class, 'deleteGender'])->name('gender.delete');
+        Route::get('/export', [GenderController::class, 'export']);
+    });
+    Route::group(['prefix' => 'marriedStatus'], function ($router) {
+        Route::get('/get', [MarriedStatusController::class, 'getMarriedStatus'])->name('marriedStatus.get');
+        Route::post('/make', [MarriedStatusController::class, 'makeMarriedStatus'])->name('marriedStatus.make');
+        Route::post('/update', [MarriedStatusController::class, 'updateMarriedStatus'])->name('marriedStatus.update');
+        Route::post('/delete', [MarriedStatusController::class, 'deleteMarriedStatus'])->name('marriedStatus.delete');
+        Route::get('/export', [MarriedStatusController::class, 'export']);
+    });
+    Route::group(['prefix' => 'religion'], function ($router) {
+        Route::get('/get', [ReligionController::class, 'getReligion'])->name('religion.get');
+        Route::post('/make', [ReligionController::class, 'makeReligion'])->name('religion.make');
+        Route::post('/update', [ReligionController::class, 'updateReligion'])->name('religion.update');
+        Route::post('/delete', [ReligionController::class, 'deleteReligion'])->name('religion.delete');
+        Route::get('/export', [ReligionController::class, 'export']);
+    });
+    Route::group(['prefix' => 'citizen'], function ($router) {
+        Route::get('/get', [CitizenController::class, 'getCitizen'])->name('citizen.get');
+        Route::post('/make', [CitizenController::class, 'makeCitizen'])->name('citizen.make');
+        Route::post('/update', [CitizenController::class, 'updateCitizen'])->name('citizen.update');
+        Route::post('/delete', [CitizenController::class, 'deleteCitizen'])->name('citizen.delete');
+        Route::get('/export', [CitizenController::class, 'export']);
     });
 
     Route::group(['prefix' => 'settings'], function () {

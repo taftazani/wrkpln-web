@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\EmployeeType;
 
 use App\Models\EmployeeType;
 
@@ -13,7 +13,7 @@ class EmployeeTypeRepository
                 return $query->where('type', 'like', "%{$search}%");
             })
             ->orderBy('type')
-            ->paginate(10);
+            ->get();
     }
 
     public function getLastEmployeeType()

@@ -1,22 +1,22 @@
 <?php
 
-namespace App\Services\MenuMapping;
+namespace App\Services\Gender;
 
-use App\Repositories\MenuMapping\MenuMappingRepository;
+use App\Repositories\Gender\GenderRepository;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class MenuMappingService
+class GenderService
 {
-        public function __construct(private MenuMappingRepository $repository)
+        public function __construct(private GenderRepository $repository)
         {
         }
 
         public function get()
         {
                 try {
-                        return $this->repository->getMenuMapping();
+                        return $this->repository->getGender();
                 } catch (Exception $e) {
                         return [
                                 'status' => false,
@@ -29,9 +29,7 @@ class MenuMappingService
         public function make(Request $request)
         {
                 $validator = Validator::make($request->all(), [
-                        'package_type_id' => 'required',
-                        'module' => 'required|in:web,mobile',
-                        'permission_id' => 'required',
+                        'name' => 'required',
                 ]);
 
                 if ($validator->fails()) {
@@ -43,7 +41,7 @@ class MenuMappingService
                 }
 
                 try {
-                        return $this->repository->makeMenuMapping($request->all());
+                        return $this->repository->makeGender($request->all());
                 } catch (Exception $e) {
                         return [
                                 'status' => false,
@@ -57,9 +55,7 @@ class MenuMappingService
         {
                 $validator = Validator::make($request->all(), [
                         'id' => 'required',
-                        'package_type_id' => 'required',
-                        'module' => 'required',
-                        'permission_id' => 'required',
+                        'name' => 'required',
                         'status' => 'required'
                 ]);
 
@@ -72,7 +68,7 @@ class MenuMappingService
                 }
 
                 try {
-                        return $this->repository->updateMenuMapping($request->all());
+                        return $this->repository->updateGender($request->all());
                 } catch (Exception $e) {
                         return [
                                 'status' => false,
@@ -84,11 +80,11 @@ class MenuMappingService
         public function bulkUpdate(Request $request)
         {
                 $validator = Validator::make($request->all(), [
-                        'menu_mappings' => 'required|array',
-                        'menu_mappings.*.id' => 'required|exists:menu_mappings,id',
-                        'menu_mappings.*.name' => 'required|string|max:255',
-                        'menu_mappings.*.detail' => 'required|string|max:255',
-                        'menu_mappings.*.status' => 'required|integer|in:0,1',
+                        'genders' => 'required|array',
+                        'genders.*.id' => 'required|exists:genders,id',
+                        'genders.*.name' => 'required|string|max:255',
+                        'genders.*.detail' => 'required|string|max:255',
+                        'genders.*.status' => 'required|integer|in:0,1',
                 ]);
 
 
@@ -101,7 +97,7 @@ class MenuMappingService
                 }
 
                 try {
-                        return $this->repository->bulkUpdateMenuMappings($request->all());
+                        return $this->repository->bulkUpdateGenders($request->all());
                 } catch (Exception $e) {
                         return [
                                 'status' => false,
@@ -126,7 +122,7 @@ class MenuMappingService
                 }
 
                 try {
-                        return $this->repository->deleteMenuMapping($request->all());
+                        return $this->repository->deleteGender($request->all());
                 } catch (Exception $e) {
                         return [
                                 'status' => false,

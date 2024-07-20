@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\PackageTypeService;
+use App\Services\PackageType\PackageTypeService;
 use Illuminate\Http\Request;
 use App\Traits\ApiResponse;
 
@@ -27,15 +27,15 @@ class PackageTypeController extends Controller
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $result = $this->service->update($request, $id);
+        $result = $this->service->update($request);
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $result = $this->service->delete($id);
+        $result = $this->service->delete($request);
         return $this->response($result['data'], $result['message'], $result['status']);
     }
 
