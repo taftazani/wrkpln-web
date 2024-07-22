@@ -31,6 +31,7 @@ use App\Http\Controllers\Api\MarriedStatusController;
 use App\Http\Controllers\Api\MasterScheduleController;
 use App\Http\Controllers\Api\MenuMappingController;
 use App\Http\Controllers\Api\PackageTypeController;
+use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\ReligionController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -40,8 +41,11 @@ Route::group(['prefix' => 'auth'], function ($router) {
 });
 Route::post('/register', [MasterUserController::class, 'makeUser'])->name('user.make');
 
+Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/get-packages', [PackageTypeController::class, 'index']);
 
-Route::group(['middleware' => 'jwt.verify'], function ($router) {
+
+Route::group(['middleware' => 'jwt.verify', 'otp.verified'], function ($router) {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::group(['prefix' => 'dashboard'], function ($router) {
