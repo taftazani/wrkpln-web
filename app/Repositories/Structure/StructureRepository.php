@@ -29,7 +29,14 @@ class StructureRepository
     public function makeStructure(array $data)
     {
         try {
-            $structure = Structure::create($data);
+            $structure = Structure::create([
+                'name' => $data['name'],
+                'organization_id' => $data['organization_id']['value'],
+                'function_id' => $data['function_id']['value'],
+                'level_structure_id' => $data['level_structure_id']['value'],
+                'cost_center' => $data['cost_center'],
+                'plan_man_power' => $data['plan_man_power'],
+            ]);
             return [
                 'status' => true,
                 'message' => 'Success Creating Structure',

@@ -36,7 +36,7 @@ class MenuMappingRepository
                                 'package_type_id' => $data['package_type_id'],
                                 'module' => $data['module'],
                                 'permission_id' => $data['permission_id'],
-                                'status' => 1,
+                                'status' => $data['status'],
                         ]);
 
                         return [

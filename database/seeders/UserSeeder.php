@@ -16,6 +16,7 @@ class UserSeeder extends Seeder
         {
                 $post = new User();
                 $post->name = 'Super Admin';
+                $post->user_id = 'admin';
                 $post->email = 'admin@mail.com';
                 $post->role = 1;
                 $post->password = Hash::make('admin123');

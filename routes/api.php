@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\FunctionsController;
 use App\Http\Controllers\Api\GenderController;
+use App\Http\Controllers\Api\JenisAktifitasController;
 use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\MasterRoleController;
 use App\Http\Controllers\Api\MasterUserController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\Api\MarriedStatusController;
 use App\Http\Controllers\Api\MasterScheduleController;
 use App\Http\Controllers\Api\MenuMappingController;
 use App\Http\Controllers\Api\PackageTypeController;
+use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\ReligionController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
@@ -40,8 +42,11 @@ Route::group(['prefix' => 'auth'], function ($router) {
 });
 Route::post('/register', [MasterUserController::class, 'makeUser'])->name('user.make');
 
+Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/get-packages', [PackageTypeController::class, 'index']);
 
-Route::group(['middleware' => 'jwt.verify'], function ($router) {
+
+Route::group(['middleware' => 'jwt.verify', 'otp.verified'], function ($router) {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::group(['prefix' => 'dashboard'], function ($router) {
@@ -147,9 +152,23 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
     });
 
     Route::group(['prefix' => 'settings'], function () {
+        Route::get('/get', [SettingsController::class, 'getSettings']);
         Route::post('/login-timeout', [SettingsController::class, 'updateLoginTimeout']);
         Route::post('/workday/{id}', [SettingsController::class, 'updateWorkday']);
     });
+    Route::group(['prefix' => 'jenis-aktifitas'], function ($router) {
+        Route::get('/get', [JenisAktifitasController::class, 'index'])->name('jenis_aktifitas.get');
+        Route::post('/make', [JenisAktifitasController::class, 'store'])->name('jenis_aktifitas.make');
+        Route::post('/update', [JenisAktifitasController::class, 'update'])->name('jenis_aktifitas.update');
+        Route::post('/delete', [JenisAktifitasController::class, 'destroy'])->name('jenis_aktifitas.delete');
+        // Route::get('/export', [JenisAktifitasController::class, 'export']);
+        // Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload']);
+        // Route::get('/bulk-upload/{id}/details', [JenisAktifitasController::class, 'bulkUploadDetails']);
+
+        Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload'])->name('jenis_aktifitas.bulk_upload');
+        Route::get('/export', [JenisAktifitasController::class, 'export'])->name('jenis_aktifitas.export');
+    });
+
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);
     });

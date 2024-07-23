@@ -11,6 +11,28 @@ use Illuminate\Http\Request;
 class SettingsController extends Controller
 {
     use ApiResponse;
+    public function getSettings()
+    {
+        try {
+            $loginTimeout = LoginTimeout::first();
+            $workdays = Workday::all();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Success Getting Settings',
+                'data' => [
+                    'loginTimeout' => $loginTimeout,
+                    'workdays' => $workdays
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error Getting Settings: ' . $e->getMessage(),
+                'data' => null
+            ]);
+        }
+    }
 
     public function updateLoginTimeout(Request $request)
     {

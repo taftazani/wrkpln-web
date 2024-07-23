@@ -12,4 +12,8 @@ class PackageType extends Model
     protected $fillable = [
         'code', 'name', 'price', 'status'
     ];
+    public function companies()
+    {
+        return $this->hasMany(Company::class);
+    }
 }

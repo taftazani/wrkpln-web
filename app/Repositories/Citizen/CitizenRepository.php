@@ -45,7 +45,7 @@ class CitizenRepository
                         $religion = Citizen::create([
                                 'code' => $newCode,
                                 'name' => $data['name'],
-                                'status' => 1,
+                                'status' => $data['status'],
                         ]);
 
                         return [

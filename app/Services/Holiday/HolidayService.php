@@ -31,7 +31,7 @@ class HolidayService
         $validator = Validator::make($request->all(), [
             'holiday_date' => 'required|date|unique:holidays,holiday_date',
             'holiday_name' => 'required|string|max:255',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -59,7 +59,7 @@ class HolidayService
             'id' => 'required|exists:holidays,id',
             'holiday_date' => 'required|date|unique:holidays,holiday_date,' . $request->id,
             'holiday_name' => 'required|string|max:255',
-            'status' => 'required|in:active,inactive'
+            'status' => 'required'
         ]);
 
         if ($validator->fails()) {

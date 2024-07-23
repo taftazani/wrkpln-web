@@ -30,9 +30,9 @@ class StructureService
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'organization_id' => 'required|exists:organizations,id',
-            'function_id' => 'required|exists:functions,id',
-            'level_structure_id' => 'required|exists:level_structures,id',
+            'organization_id.value' => 'required|exists:organizations,id',
+            'function_id.value' => 'required|exists:functions,id',
+            'level_structure_id.value' => 'required|exists:level_structures,id',
             'plan_man_power' => 'required|integer',
         ]);
 
