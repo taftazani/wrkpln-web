@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EmployeeTypeController;
 use App\Http\Controllers\Api\FunctionsController;
 use App\Http\Controllers\Api\GenderController;
+use App\Http\Controllers\Api\JenisAktifitasController;
 use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\MasterRoleController;
 use App\Http\Controllers\Api\MasterUserController;
@@ -151,9 +152,23 @@ Route::group(['middleware' => 'jwt.verify', 'otp.verified'], function ($router) 
     });
 
     Route::group(['prefix' => 'settings'], function () {
+        Route::get('/get', [SettingsController::class, 'getSettings']);
         Route::post('/login-timeout', [SettingsController::class, 'updateLoginTimeout']);
         Route::post('/workday/{id}', [SettingsController::class, 'updateWorkday']);
     });
+    Route::group(['prefix' => 'jenis-aktifitas'], function ($router) {
+        Route::get('/get', [JenisAktifitasController::class, 'index'])->name('jenis_aktifitas.get');
+        Route::post('/make', [JenisAktifitasController::class, 'store'])->name('jenis_aktifitas.make');
+        Route::post('/update', [JenisAktifitasController::class, 'update'])->name('jenis_aktifitas.update');
+        Route::post('/delete', [JenisAktifitasController::class, 'destroy'])->name('jenis_aktifitas.delete');
+        // Route::get('/export', [JenisAktifitasController::class, 'export']);
+        // Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload']);
+        // Route::get('/bulk-upload/{id}/details', [JenisAktifitasController::class, 'bulkUploadDetails']);
+
+        Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload'])->name('jenis_aktifitas.bulk_upload');
+        Route::get('/export', [JenisAktifitasController::class, 'export'])->name('jenis_aktifitas.export');
+    });
+
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);
     });
