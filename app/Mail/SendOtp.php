@@ -29,7 +29,7 @@ class SendOtp extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Login OTP Code',
+            subject: 'Workplan - Kode OTP',
         );
     }
 

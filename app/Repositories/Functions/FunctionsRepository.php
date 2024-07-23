@@ -15,11 +15,11 @@ class FunctionsRepository
     public function getFunctions()
     {
         try {
-            $organization = Functions::orderByDesc('created_at')->get();
+            $function = Functions::orderByDesc('created_at')->get();
             return [
                 'status' => true,
                 'message' => 'Success Getting Data Functions',
-                'data' => $organization,
+                'data' => $function,
             ];
         } catch (Exception $e) {
             return [
@@ -33,7 +33,7 @@ class FunctionsRepository
     public function makeFunctions(array $data)
     {
         try {
-            // Retrieve the last organization
+            // Retrieve the last function
             $lastFunctions = Functions::latest('id')->first();
 
             // Calculate the new ID (increment by 1)
@@ -43,7 +43,7 @@ class FunctionsRepository
             $length = max(3, strlen((string) $newId));
             $newCode = 'FN' . str_pad($newId, $length, '0', STR_PAD_LEFT);
 
-            $organization = Functions::create([
+            $function = Functions::create([
                 'code' => $newCode,
                 'name' => $data['name'],
                 'detail' => $data['detail'],
@@ -53,7 +53,7 @@ class FunctionsRepository
             return [
                 'status' => true,
                 'message' => 'Success Creating Functions',
-                'data' => $organization,
+                'data' => $function,
             ];
         } catch (Exception $e) {
             return [
@@ -67,16 +67,16 @@ class FunctionsRepository
     public function updateFunctions(array $data)
     {
         try {
-            $organization = Functions::findOrFail($data['id']);
-            $organization->name = $data['name'];
-            $organization->detail = $data['detail'];
-            $organization->status = $data['status'];
-            $organization->save();
+            $function = Functions::findOrFail($data['id']);
+            $function->name = $data['name'];
+            $function->detail = $data['detail'];
+            $function->status = $data['status'];
+            $function->save();
 
             return [
                 'status' => true,
                 'message' => 'Success Changing Detail Functions',
-                'data' => $organization,
+                'data' => $function,
             ];
         } catch (Exception $e) {
             return [
@@ -92,8 +92,8 @@ class FunctionsRepository
     public function deleteFunctions(array $data)
     {
         try {
-            $organization = Functions::findOrFail($data['id']);
-            // $user = UserRole::where('organization_id', $organization->id)->first();
+            $function = Functions::findOrFail($data['id']);
+            // $user = UserRole::where('function_id', $function->id)->first();
             // if ($user) {
             //     return [
             //         'status' => false,
@@ -101,12 +101,12 @@ class FunctionsRepository
             //         'data' => $user,
             //     ];
             // }
-            $organization->delete();
+            $function->delete();
 
             return [
                 'status' => true,
                 'message' => 'Success Deleting Detail Functions',
-                'data' => $organization,
+                'data' => $function,
             ];
         } catch (Exception $e) {
             return [
@@ -139,16 +139,16 @@ class FunctionsRepository
         }
     }
 
-    public function bulkUpdateFunctionss(array $organizations)
+    public function bulkUpdateFunctionss(array $functions)
     {
         DB::beginTransaction();
         try {
-            foreach ($organizations as $data) {
-                $organization = Functions::findOrFail($data['id']);
-                if (isset($data['name'])) $organization->name = $data['name'];
-                if (isset($data['detail'])) $organization->detail = $data['detail'];
-                if (isset($data['status'])) $organization->status = $data['status'];
-                $organization->save();
+            foreach ($functions as $data) {
+                $function = Functions::findOrFail($data['id']);
+                if (isset($data['name'])) $function->name = $data['name'];
+                if (isset($data['detail'])) $function->detail = $data['detail'];
+                if (isset($data['status'])) $function->status = $data['status'];
+                $function->save();
             }
             DB::commit();
 

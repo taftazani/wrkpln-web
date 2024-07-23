@@ -1,29 +1,39 @@
 <?php
 
-use App\Http\Controllers\Api\AbsensiController;
-use App\Http\Controllers\Api\DashboardController;
-use App\Http\Controllers\Api\FunctionsController;
-use App\Http\Controllers\Api\IzinController;
-use App\Http\Controllers\Api\KasbonController;
+use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Api\KpiController;
-use App\Http\Controllers\Api\LevelStructureController;
-use App\Http\Controllers\Api\MasterPlaceController;
+use App\Http\Controllers\Api\IzinController;
+use App\Http\Controllers\Api\TodoController;
+use App\Http\Controllers\Api\KasbonController;
+use App\Http\Controllers\Api\ReportController;
+use App\Http\Controllers\Api\AbsensiController;
+use App\Http\Controllers\Api\CitizenController;
+use App\Http\Controllers\Api\HolidayController;
+use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\SettingsController;
+use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\EmployeeTypeController;
+use App\Http\Controllers\Api\FunctionsController;
+use App\Http\Controllers\Api\GenderController;
+use App\Http\Controllers\Api\JenisAktifitasController;
+use App\Http\Controllers\Api\StructureController;
 use App\Http\Controllers\Api\MasterRoleController;
-use App\Http\Controllers\Api\MasterScheduleController;
-use App\Http\Controllers\Api\MasterShiftController;
 use App\Http\Controllers\Api\MasterUserController;
+use App\Http\Controllers\Api\MasterPlaceController;
+use App\Http\Controllers\Api\MasterShiftController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\OrganizationController;
-use App\Http\Controllers\Api\PayrollController;
-use App\Http\Controllers\Api\ReportController;
-use App\Http\Controllers\Api\StructureController;
-use App\Http\Controllers\Api\TodoController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MasterPermissionController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
+use App\Http\Controllers\Api\LevelStructureController;
+use App\Http\Controllers\Api\MarriedStatusController;
+use App\Http\Controllers\Api\MasterScheduleController;
+use App\Http\Controllers\Api\MenuMappingController;
+use App\Http\Controllers\Api\PackageTypeController;
+use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\ReligionController;
 
 Route::group(['prefix' => 'auth'], function ($router) {
     Route::post('login', [AuthController::class, 'login']);
@@ -32,8 +42,11 @@ Route::group(['prefix' => 'auth'], function ($router) {
 });
 Route::post('/register', [MasterUserController::class, 'makeUser'])->name('user.make');
 
+Route::post('/register', [RegisterController::class, 'register']);
+Route::get('/get-packages', [PackageTypeController::class, 'index']);
 
-Route::group(['middleware' => 'jwt.verify'], function ($router) {
+
+Route::group(['middleware' => 'jwt.verify', 'otp.verified'], function ($router) {
     Route::post('send-otp', [AuthController::class, 'sendOtp']);
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
     Route::group(['prefix' => 'dashboard'], function ($router) {
@@ -77,6 +90,85 @@ Route::group(['middleware' => 'jwt.verify'], function ($router) {
         Route::post('/assign-user', [StructureController::class, 'assignUserToStructure'])->name('structure.assignUser');
         Route::post('/remove-user', [StructureController::class, 'removeUserFromStructure'])->name('structure.removeUser');
     });
+    Route::group(['prefix' => 'holidays'], function ($router) {
+        Route::get('/get', [HolidayController::class, 'getHolidays'])->name('holidays.get');
+        Route::get('/export', [HolidayController::class, 'export']);
+        Route::post('/make', [HolidayController::class, 'createHoliday'])->name('holidays.create');
+        Route::post('/update', [HolidayController::class, 'updateHoliday'])->name('holidays.update');
+        Route::post('/delete', [HolidayController::class, 'deleteHoliday'])->name('holidays.delete');
+        Route::post('/bulk-upload', [HolidayController::class, 'bulkUpload'])->name('holidays.bulk_upload');
+    });
+
+    Route::prefix('employee-types')->group(function () {
+        Route::get('/get', [EmployeeTypeController::class, 'index']);
+        Route::post('/make', [EmployeeTypeController::class, 'store']);
+        Route::post('/update', [EmployeeTypeController::class, 'update']);
+        Route::post('/delete', [EmployeeTypeController::class, 'destroy']);
+        Route::post('/bulk-upload', [EmployeeTypeController::class, 'bulkUpload']);
+        Route::get('/export', [EmployeeTypeController::class, 'export']);
+    });
+    Route::group(['prefix' => 'package-types'], function () {
+        Route::get('/get', [PackageTypeController::class, 'index']);
+        Route::post('/make', [PackageTypeController::class, 'store']);
+        Route::post('/update', [PackageTypeController::class, 'update']);
+        Route::post('/delete', [PackageTypeController::class, 'destroy']);
+        Route::post('/bulk-upload', [PackageTypeController::class, 'bulkUpload']);
+        Route::get('/export', [PackageTypeController::class, 'export']);
+    });
+    Route::group(['prefix' => 'menuMapping'], function ($router) {
+        Route::get('/get', [MenuMappingController::class, 'getMenuMapping'])->name('menu_mapping.get');
+        Route::get('/export', [MenuMappingController::class, 'export']);
+        Route::post('/make', [MenuMappingController::class, 'makeMenuMapping'])->name('menu_mapping.make');
+        Route::post('/update', [MenuMappingController::class, 'updateMenuMapping'])->name('menu_mapping.update');
+        Route::post('/delete', [MenuMappingController::class, 'deleteMenuMapping'])->name('menu_mapping.delete');
+    });
+    Route::group(['prefix' => 'gender'], function ($router) {
+        Route::get('/get', [GenderController::class, 'getGender'])->name('gender.get');
+        Route::post('/make', [GenderController::class, 'makeGender'])->name('gender.make');
+        Route::post('/update', [GenderController::class, 'updateGender'])->name('gender.update');
+        Route::post('/delete', [GenderController::class, 'deleteGender'])->name('gender.delete');
+        Route::get('/export', [GenderController::class, 'export']);
+    });
+    Route::group(['prefix' => 'marriedStatus'], function ($router) {
+        Route::get('/get', [MarriedStatusController::class, 'getMarriedStatus'])->name('marriedStatus.get');
+        Route::post('/make', [MarriedStatusController::class, 'makeMarriedStatus'])->name('marriedStatus.make');
+        Route::post('/update', [MarriedStatusController::class, 'updateMarriedStatus'])->name('marriedStatus.update');
+        Route::post('/delete', [MarriedStatusController::class, 'deleteMarriedStatus'])->name('marriedStatus.delete');
+        Route::get('/export', [MarriedStatusController::class, 'export']);
+    });
+    Route::group(['prefix' => 'religion'], function ($router) {
+        Route::get('/get', [ReligionController::class, 'getReligion'])->name('religion.get');
+        Route::post('/make', [ReligionController::class, 'makeReligion'])->name('religion.make');
+        Route::post('/update', [ReligionController::class, 'updateReligion'])->name('religion.update');
+        Route::post('/delete', [ReligionController::class, 'deleteReligion'])->name('religion.delete');
+        Route::get('/export', [ReligionController::class, 'export']);
+    });
+    Route::group(['prefix' => 'citizen'], function ($router) {
+        Route::get('/get', [CitizenController::class, 'getCitizen'])->name('citizen.get');
+        Route::post('/make', [CitizenController::class, 'makeCitizen'])->name('citizen.make');
+        Route::post('/update', [CitizenController::class, 'updateCitizen'])->name('citizen.update');
+        Route::post('/delete', [CitizenController::class, 'deleteCitizen'])->name('citizen.delete');
+        Route::get('/export', [CitizenController::class, 'export']);
+    });
+
+    Route::group(['prefix' => 'settings'], function () {
+        Route::get('/get', [SettingsController::class, 'getSettings']);
+        Route::post('/login-timeout', [SettingsController::class, 'updateLoginTimeout']);
+        Route::post('/workday/{id}', [SettingsController::class, 'updateWorkday']);
+    });
+    Route::group(['prefix' => 'jenis-aktifitas'], function ($router) {
+        Route::get('/get', [JenisAktifitasController::class, 'index'])->name('jenis_aktifitas.get');
+        Route::post('/make', [JenisAktifitasController::class, 'store'])->name('jenis_aktifitas.make');
+        Route::post('/update', [JenisAktifitasController::class, 'update'])->name('jenis_aktifitas.update');
+        Route::post('/delete', [JenisAktifitasController::class, 'destroy'])->name('jenis_aktifitas.delete');
+        // Route::get('/export', [JenisAktifitasController::class, 'export']);
+        // Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload']);
+        // Route::get('/bulk-upload/{id}/details', [JenisAktifitasController::class, 'bulkUploadDetails']);
+
+        Route::post('/bulk-upload', [JenisAktifitasController::class, 'bulkUpload'])->name('jenis_aktifitas.bulk_upload');
+        Route::get('/export', [JenisAktifitasController::class, 'export'])->name('jenis_aktifitas.export');
+    });
+
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('me', [AuthController::class, 'me']);
     });

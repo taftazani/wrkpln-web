@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('code');
             $table->string('name');
             $table->string('detail');
-            $table->integer('status')->default(1);
+            $table->enum('status',[0, 1])->default(1)->comment('Active Status');
             $table->timestampsWithUser();
         });
     }

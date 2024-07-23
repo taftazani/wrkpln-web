@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Structure;
 
 use App\Models\Structure;
@@ -28,7 +29,14 @@ class StructureRepository
     public function makeStructure(array $data)
     {
         try {
-            $structure = Structure::create($data);
+            $structure = Structure::create([
+                'name' => $data['name'],
+                'organization_id' => $data['organization_id']['value'],
+                'function_id' => $data['function_id']['value'],
+                'level_structure_id' => $data['level_structure_id']['value'],
+                'cost_center' => $data['cost_center'],
+                'plan_man_power' => $data['plan_man_power'],
+            ]);
             return [
                 'status' => true,
                 'message' => 'Success Creating Structure',
@@ -111,6 +119,17 @@ class StructureRepository
     {
         try {
             $structure = Structure::findOrFail($data['structure_id']);
+
+            // Check if the user is already assigned
+            if ($structure->users()->where('user_id', $data['user_id'])->exists()) {
+                return [
+                    'status' => false,
+                    'message' => 'User is already assigned to this structure',
+                    'data' => null,
+                ];
+            }
+
+            // Attach the user to the structure
             $structure->users()->attach($data['user_id']);
 
             return [
@@ -121,11 +140,12 @@ class StructureRepository
         } catch (Exception $e) {
             return [
                 'status' => false,
-                'message' => 'Error Assigning User to Structure' . $e->getMessage(),
+                'message' => 'Error Assigning User to Structure: ' . $e->getMessage(),
                 'data' => null,
             ];
         }
     }
+
 
     public function removeUserFromStructure(array $data)
     {

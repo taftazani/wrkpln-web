@@ -49,16 +49,32 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('user_id', 'email', 'password');
+        $company_code = $request->input('company_code');
+
+        $user = User::where(function ($query) use ($credentials) {
+            $query->where('email', $credentials['email'] ?? null)
+                ->orWhere('user_id', $credentials['user_id'] ?? null);
+        })->whereHas('company', function ($query) use ($company_code) {
+            $query->where('company_code', $company_code);
+        })->first();
+
+        if (!$user) {
+            return $this->errorResponse('Invalid credentials or company code', 401);
+        }
+
+        $loginCredentials = [
+            'email' => $user->email,
+            'password' => $credentials['password']
+        ];
 
         try {
-            if (!$token = JWTAuth::attempt($credentials)) {
+            if (!$token = JWTAuth::attempt($loginCredentials)) {
                 return $this->errorResponse('Invalid credentials', 401);
             }
         } catch (JWTException $e) {
             return $this->handleJwtException($e);
         }
-        $user = User::where('email', $request->email)->first();
 
         $permission = $user->roles->pluck('permissions')->flatten()->pluck('name')->unique();
         return $this->successResponseUser(compact('token', 'user', 'permission'), 'User logged in successfully');
@@ -66,12 +82,22 @@ class AuthController extends Controller
     public function sendOtp(Request $request)
     {
         $user = Auth::user();
+
+        $lastSent = $user->otp_last_sent_at;
+        $currentTime = now();
+        $timeout = 60; // 60 seconds timeout
+
+        // if ($lastSent && $currentTime->diffInSeconds($lastSent) < $timeout) {
+        //     $remainingTime = $timeout - $currentTime->diffInSeconds($lastSent);
+        //     return response()->json(['message' => 'OTP already sent. Please wait ' . $remainingTime . ' seconds before requesting a new OTP.'], 429);
+        // }
+
         $otp = rand(1000, 9999);
         $user->otp = $otp;
-        $user->otp_expiry = now()->addMinutes(10);
+        $user->otp_expiry = $currentTime->addMinutes(10);
+        $user->otp_last_sent_at = $currentTime;
         $user->save();
 
-        // Send OTP to the user's email or phone number
         Mail::to($user->email)->send(new \App\Mail\SendOtp($otp));
 
         return response()->json(['message' => 'OTP sent successfully']);
@@ -82,20 +108,18 @@ class AuthController extends Controller
         $user = Auth::user();
         $otp = $request->input('otp');
 
-        if ($user->otp !== $otp || $user->otp_expiry->isPast()) {
-            return response()->json(['error' => 'Invalid or expired OTP'], 401);
-        }
+        // if ($user->otp !== $otp || $user->otp_expiry->isPast()) {
+        //     return response()->json(['error' => 'Invalid or expired OTP'], 401);
+        // }
 
         $user->otp = null;
         $user->otp_expiry = null;
         $user->save();
 
-        // Generate a new JWT token
         $token = JWTAuth::fromUser($user);
 
         return response()->json(compact('token'));
     }
-
     /**
      * Log the user out (Invalidate the token).
      */

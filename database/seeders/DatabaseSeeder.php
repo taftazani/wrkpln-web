@@ -18,6 +18,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             RolePermissionSeeder::class,
             KpiAspectSeeder::class,
+            OrganizationSeeder::class,
+            FunctionSeeder::class,
+            LevelStructureSeeder::class,
         ]);
         // User::factory(10)->create();
 
